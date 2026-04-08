@@ -217,5 +217,70 @@ BEGIN
       ((SELECT id FROM seq), 4, 'Finished eating', 'standard', 'transition', NULL,'When you are done, wait at the table.'),
       ((SELECT id FROM seq), 5, 'Clear your plate','standard', 'celebration',NULL,'Take your plate to the kitchen. Well done!');
 
+    -- ============================================================
+    -- TEMPLATE 11: Play Time
+    -- ============================================================
+    WITH seq AS (
+      INSERT INTO public.sequences (
+        id, owner_id, title, type, is_template, is_published, completion_action, reward_text
+      ) VALUES (
+        '00000000-0000-0000-0000-000000000011',
+        '00000000-0000-0000-0000-000000000000',
+        'Play Time', 'routine', TRUE, TRUE,
+        'celebrate', 'Great playing today!'
+      ) RETURNING id
+    )
+    INSERT INTO public.steps (sequence_id, order_index, title, step_type, cue_type, duration_seconds, help_text) VALUES
+      ((SELECT id FROM seq), 1, 'Choose what to play',  'standard', 'start',      60,   'What do you want to play with today? Pick something.'),
+      ((SELECT id FROM seq), 2, 'Get your things',      'standard', 'transition', 60,   'Get what you need to play.'),
+      ((SELECT id FROM seq), 3, 'Play!',                'standard', 'pacing',     1800, 'Play time! Have fun.'),
+      ((SELECT id FROM seq), 4, 'Five more minutes',    'standard', 'transition', 300,  'Five more minutes of play, then we will tidy up.'),
+      ((SELECT id FROM seq), 5, 'Tidy up time',         'standard', 'calm',       300,  'Play time is finished. Let''s tidy up together.'),
+      ((SELECT id FROM seq), 6, 'All tidied!',          'standard', 'celebration',NULL, 'Everything is put away. Well done!');
+
+    -- ============================================================
+    -- TEMPLATE 12: TV / iPad Time
+    -- ============================================================
+    WITH seq AS (
+      INSERT INTO public.sequences (
+        id, owner_id, title, type, is_template, is_published, completion_action, reward_text
+      ) VALUES (
+        '00000000-0000-0000-0000-000000000012',
+        '00000000-0000-0000-0000-000000000000',
+        'TV / iPad Time', 'routine', TRUE, TRUE,
+        'celebrate', 'Great job turning it off!'
+      ) RETURNING id
+    )
+    INSERT INTO public.steps (sequence_id, order_index, title, step_type, cue_type, duration_seconds, help_text) VALUES
+      ((SELECT id FROM seq), 1, 'Choose what to watch', 'standard', 'start',      60,   'Pick one show or one game. Then we start.'),
+      ((SELECT id FROM seq), 2, 'Sit comfortably',      'standard', 'transition', 30,   'Find a comfy spot to sit.'),
+      ((SELECT id FROM seq), 3, 'Watch or play',        'standard', 'pacing',     1800, 'Enjoy your screen time.'),
+      ((SELECT id FROM seq), 4, 'Two more minutes',     'standard', 'transition', 120,  'Screen time is nearly over. Two more minutes.'),
+      ((SELECT id FROM seq), 5, 'Turn it off',          'standard', 'calm',       30,   'Time to turn the screen off now. Press the button.'),
+      ((SELECT id FROM seq), 6, 'Screen time done!',    'standard', 'celebration',NULL, 'You turned it off all by yourself. Well done!');
+
+    -- ============================================================
+    -- TEMPLATE 13: Bath Time
+    -- ============================================================
+    WITH seq AS (
+      INSERT INTO public.sequences (
+        id, owner_id, title, type, is_template, is_published, completion_action, reward_text
+      ) VALUES (
+        '00000000-0000-0000-0000-000000000013',
+        '00000000-0000-0000-0000-000000000000',
+        'Bath Time', 'routine', TRUE, TRUE,
+        'celebrate', 'All clean and fresh!'
+      ) RETURNING id
+    )
+    INSERT INTO public.steps (sequence_id, order_index, title, step_type, cue_type, duration_seconds, help_text) VALUES
+      ((SELECT id FROM seq), 1, 'Get undressed',        'standard', 'start',      120,  'Take off your clothes and put them in the basket.'),
+      ((SELECT id FROM seq), 2, 'Get in the bath',      'standard', 'transition', 30,   'Step into the bath carefully. Hold on.'),
+      ((SELECT id FROM seq), 3, 'Wash your body',       'standard', 'pacing',     180,  'Use the sponge or cloth to wash all over.'),
+      ((SELECT id FROM seq), 4, 'Wash your hair',       'standard', 'pacing',     120,  'Wash your hair. Close your eyes tight!'),
+      ((SELECT id FROM seq), 5, 'Rinse',                'standard', 'pacing',     60,   'Rinse all the soap off. Good job.'),
+      ((SELECT id FROM seq), 6, 'Get out carefully',    'standard', 'transition', 30,   'Step out of the bath carefully. Hold on.'),
+      ((SELECT id FROM seq), 7, 'Dry yourself',         'standard', 'pacing',     60,   'Use your towel to dry yourself all over.'),
+      ((SELECT id FROM seq), 8, 'Pyjamas on!',          'standard', 'celebration',NULL, 'Put on your pyjamas. All clean and cosy!');
+
   END IF;
 END $$;
