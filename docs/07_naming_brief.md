@@ -1,5 +1,6 @@
 # Naming Brief
-> Status: AWAITING VISIONARY SELECTION. Date: 2026-04-08.
+> Status: ROUND TWO — Awaiting visionary selection. Date: 2026-04-08.
+> Direction: Close to "Lulu" — warm, familiar, personal assistant / calm guide feel.
 
 ---
 
@@ -9,109 +10,126 @@ A name that feels like a warm hand on a small shoulder — calm, clear, a little
 
 ---
 
-## What the Name Must Do
+## Visionary Direction for Round Two
 
-- Feel safe and warm to a parent in a moment of overwhelm
-- Not sound medical, clinical, or diagnostic
-- Not be babyish or patronising
-- Work globally — no unintended meanings in other languages
-- Be memorable with one or two syllables
-- Feel like a companion, not a product
-- Hint at guidance, routine, or gentle structure — without being literal
-- Domain-available (.app or .co ideally)
+> "Functional, clear possibilities to feel close, familiar and give the idea of a warm personal assistant or calm guide."
+> Reference name: Lulu.
 
 ---
 
-## What the Name Must NOT Do
+## PO Assessment: "Lulu"
 
-- Sound like a therapy app
-- Sound like a tech startup (no "ly", "ify", "hub", "ify")
-- Require explanation
-- Feel stimulating, busy, or loud
-- Be tied to autism specifically
+**Score: 8.5/10 for brand fit.**
 
----
+Hits the brief hard — warm, affectionate, easy for 3-year-olds to say, companion not tool, memorable.
 
-## Six Name Directions
+**Two considerations before committing:**
+1. It is the founder's own name — intentional personal connection, or potential distance later? Be deliberate.
+2. Trademark landscape — lulu.com (publishing), Lululemon brand shorthand. Domain + trademark check required.
 
-Each includes rationale, feel, and a one-line brand line to test the name in context.
+If it feels right, it probably is right. These are checks, not blockers.
 
 ---
 
-### 1. LUMI
-**Origin:** Light in Finnish. Also related to "luminous" across Latin languages.
-**Feel:** Soft, warm, glowing. A gentle light in the room.
-**Brand line:** *"Lumi — a gentle light for your child's day."*
-**Why it works:** Universal, warm, no negative connotations. The glow metaphor fits calm, reassuring guidance. Short, easy to say in any accent.
-**Risk:** Might feel slightly Scandinavian/design-world rather than family-warm.
+## Round Two — 6 Names
 
 ---
 
-### 2. MELO
-**Origin:** Invented. Echoes "mellow", "melody", "hello".
-**Feel:** Calm, friendly, musical. Has the music/rhythm layer built into the sound of the word.
-**Brand line:** *"Melo — calm routines, happier days."*
-**Why it works:** One syllable away from "melody" — nods to the music/rhyme layer without stating it. Soft consonants. Easy for children to say. Playful but not silly.
-**Risk:** Could be confused with existing brands. Needs domain check.
+### 1. LUMA
+**Origin:** Latin root — light, warmth, glow.
+**Sounds like:** A gentle version of Lulu. Warm, soft, one syllable away.
+**Feel:** Warm guide. Glowing, calm presence. The light that helps you find the path.
+**Brand line:** *"Luma — a warm guide for your child's day."*
+**For a 3-year-old:** Easy. "Lu-ma." Two soft syllables.
+**Domain potential:** luma.app (taken but negotiable), getaluma.app, heyluma.app — findable.
+**Why over Lulu:** Ownable as a brand. No trademark conflict. Still carries the "Lu" warmth.
 
 ---
 
-### 3. KIRA
-**Origin:** Multiple origins — Irish (dark/dark one, but phonetically warm), Persian (sun), Japanese (shining).
-**Feel:** Warm, bright, companion-like. Feels like a name, not a product.
-**Brand line:** *"Kira — your child's calm guide through the day."*
-**Why it works:** Feels like a friendly guide character. Warm vowels. Works globally without negative associations. Easy for 3-year-olds to say.
-**Risk:** Feels more like a character than a platform — which could be a strength or limitation depending on brand direction.
+### 2. NOMI
+**Origin:** Invented. Echoes "know me", "home", familiar warmth.
+**Sounds like:** A companion you already know. Warm, round sounds.
+**Feel:** Personal guide. Knows your child. Learns their rhythm. Feels like a confidant.
+**Brand line:** *"Nomi — the calm guide that knows your child."*
+**For a 3-year-old:** Easy. "No-mi." Friendly and soft.
+**Domain potential:** Strong — nomi is not a major brand.
+**Why:** The "know me" echo gives it depth — this is a product that personalises to each child.
 
 ---
 
-### 4. PALO
-**Origin:** Invented/Spanish adjacent — "palo" means stick/step, but phonetically it's soft and warm.
-**Feel:** Calm, gentle, rounded. Feels handmade and warm.
-**Brand line:** *"Palo — step by step, together."*
-**Why it works:** "Step by step" aligns perfectly with the guided sequence model. Soft, rounded sounds. Short and memorable.
-**Risk:** Spanish speakers will know "palo" as stick — worth a broader language check.
+### 3. CLEO
+**Origin:** Greek — glory, fame — but phonetically just warm and familiar.
+**Sounds like:** A friendly character. A companion with a personality.
+**Feel:** Warm, clear, memorable. Slightly playful. More personality than tool.
+**Brand line:** *"Cleo — your child's calm companion."*
+**For a 3-year-old:** Easy. "Clee-oh." Distinctive and friendly.
+**Domain potential:** cleo.app taken (fintech), but cleokids.app, meetcleo.app — findable.
+**Why:** Feels like a guide with a name and a face. Great for a product that may eventually have a character/mascot.
 
 ---
 
-### 5. REMI
-**Origin:** French name, gender-neutral. Echoes "remedy", "remember", feeling of gentle care.
-**Feel:** Warm, affectionate, companion-like. Feels human.
-**Brand line:** *"Remi — gentle structure for growing minds."*
-**Why it works:** Feels like a kind companion rather than a tool. Warm, soft sounds. Works across English, French, Spanish markets. Easy for children to say.
-**Risk:** Name recognition might create expectation of a character mascot.
+### 4. WREN
+**Origin:** English — small bird. Gentle, natural, unassuming.
+**Sounds like:** Calm, steady, natural. Nothing loud. Always there.
+**Feel:** Quiet guide. Like a bird that comes to your windowsill every morning. Predictable, warm, gentle.
+**Brand line:** *"Wren — gentle structure for every day."*
+**For a 3-year-old:** Easy. One syllable. Soft.
+**Domain potential:** Good — wren is not dominated by one brand.
+**Why:** The nature metaphor fits the "calm, grounded, predictable" pillar. Different from all competitors.
 
 ---
 
-### 6. GROVE
-**Origin:** English. A small group of trees — calm, structured, natural.
-**Feel:** Grounded, safe, natural. Less companion-like, more environment-like.
-**Brand line:** *"Grove — a calm place to grow."*
-**Why it works:** "A calm place" nods to Calm Corner and the regulatory role of the product. Nature metaphor implies growth without pressure. Distinctive, domain-likely available.
-**Risk:** Slightly more abstract — less immediately connected to children or routines.
+### 5. BELA
+**Origin:** Slavic/Portuguese — beautiful, bright. Also echoes "bella" (beautiful) globally.
+**Sounds like:** Warm, affectionate, globally familiar without being generic.
+**Feel:** Warm personal guide. Gentle, bright, reassuring. Slightly more grown-up than Lulu but just as warm.
+**Brand line:** *"Bela — a brighter day, one step at a time."*
+**For a 3-year-old:** Easy. "Bay-la" or "Beh-la" depending on region.
+**Domain potential:** Findable — bela is fragmented across brands.
+**Why:** Carries warmth and brightness without feeling childish. Works globally.
 
 ---
 
-## PO Recommendation
-
-**Top two:** MELO and REMI.
-
-**MELO** if the music/rhythm layer is to be a meaningful part of the brand identity.
-**REMI** if the companion/guide feeling is the primary brand anchor.
-
-Both are short, warm, globally usable, and feel like companions rather than tools.
-
----
-
-## What Happens After You Choose
-
-1. PO does a fast domain + trademark check on shortlisted name
-2. Name is locked into all docs, code placeholders, and public layer copy
-3. `souul_application` repo can be renamed or a new domain/brand alias set up
-4. Brand palette and typography finalized around chosen name
+### 6. ORA
+**Origin:** Latin/Hebrew — light, time, prayer. Also simply "now" in some languages.
+**Sounds like:** Calm, clear, minimal. Nothing excess. Just presence.
+**Feel:** The calmest option on this list. Soft, clear, reassuring. A guide that doesn't shout.
+**Brand line:** *"Ora — calm, clear, one step at a time."*
+**For a 3-year-old:** Very easy. Two soft sounds. "Oh-ra."
+**Domain potential:** Strong — short, clean, not dominated.
+**Why:** Minimal and warm. If the brand is truly "support not stimulus" — Ora embodies that in its sound.
 
 ---
 
-## Your Turn
+## Comparison Table
 
-React to any of these — or give me a direction ("more like Melo", "something with water/nature", "shorter") and I'll generate a second round.
+| Name | Warmth | Memorable | Easy for 3yo | Companion feel | Ownable | Trademark risk |
+|---|---|---|---|---|---|---|
+| Lulu | ★★★★★ | ★★★★★ | ★★★★★ | ★★★★★ | ★★★ | ★★ (check needed) |
+| Luma | ★★★★★ | ★★★★ | ★★★★★ | ★★★★ | ★★★★ | ★★★★ |
+| Nomi | ★★★★ | ★★★★ | ★★★★★ | ★★★★★ | ★★★★★ | ★★★★★ |
+| Cleo | ★★★★ | ★★★★★ | ★★★★★ | ★★★★★ | ★★★ | ★★★ (check needed) |
+| Wren | ★★★★ | ★★★★ | ★★★★★ | ★★★ | ★★★★ | ★★★★★ |
+| Bela | ★★★★★ | ★★★★ | ★★★★ | ★★★★ | ★★★★ | ★★★★ |
+| Ora | ★★★★★ | ★★★★ | ★★★★★ | ★★★ | ★★★★★ | ★★★★★ |
+
+---
+
+## PO Recommendation — Round Two
+
+**If Lulu is off the table:** LUMA or NOMI.
+- **LUMA** keeps the warmth and sound of Lulu, adds ownable brand space, cleaner trademark path.
+- **NOMI** is the most distinctive and has the deepest meaning for a personalised companion product.
+
+**If the guide/character feel matters most:** CLEO.
+
+**If calm and minimal is the dominant brand feeling:** ORA.
+
+---
+
+## What Happens When You Choose
+
+1. Domain + trademark check (I run this as a fast audit)
+2. Name locked into all docs, code, and public layer
+3. Brand palette + typography finalised around the name
+4. Phase 1 build begins with the name in place
