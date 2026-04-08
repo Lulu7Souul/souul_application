@@ -51,7 +51,8 @@ CREATE TABLE public.child_profiles (
   avatar_url TEXT,
   audio_enabled BOOLEAN NOT NULL DEFAULT TRUE,
   motion_enabled BOOLEAN NOT NULL DEFAULT TRUE,
-  communication_mode TEXT NOT NULL DEFAULT 'symbols_words'
+  -- Default: symbols_only — primary users are early years 3-7 (pre-readers)
+  communication_mode TEXT NOT NULL DEFAULT 'symbols_only'
     CHECK (communication_mode IN ('symbols_only', 'symbols_words', 'words_only')),
   pin_hash TEXT NOT NULL,          -- bcrypt hash of 4-digit PIN
   calm_sequence_id UUID,           -- FK added after sequences table is created

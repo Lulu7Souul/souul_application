@@ -1,3 +1,4 @@
+// Default is symbols_only — primary users are early years 3-7, pre-readers
 export type CommunicationMode = 'symbols_only' | 'symbols_words' | 'words_only'
 
 export type TeamPermission = 'view' | 'edit'
