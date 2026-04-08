@@ -10,8 +10,8 @@ export default function PlayPage() {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="text-center space-y-2 mb-8">
-        <h1 className="text-4xl font-bold text-brand-600">Souul</h1>
-        <p className="text-text-secondary text-lg">Ready for your routines?</p>
+        <h1 className="text-4xl font-bold text-brand-600">Lulu</h1>
+        <p className="text-text-secondary text-lg">Ready for today?</p>
       </div>
       {/* PinEntry rendered client-side with profile data */}
       {/* TODO Phase 1: wire PinEntry component with Supabase child profile lookup */}

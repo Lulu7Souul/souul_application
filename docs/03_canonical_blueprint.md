@@ -6,11 +6,13 @@
 
 ## Product Statement
 
-**Souul** is a web-first guided-sequence platform for neurodivergent children and their caregivers.
+**Lulu** is a calm guide for neurodivergent children and their families.
 
-Adults build structured visual routines with optional music and voice cues. Children play them one step at a time on any device. Teams share sequences across home, school, and therapy.
+Parents build gentle visual routines with Lulu's voice and music cues. Children move through them one step at a time, guided by Lulu. The whole family shares routines across home, school, and therapy.
 
-It reduces repeated adult prompting and supports participation, transitions, independence, and co-regulation — without diagnosis labels, dark patterns, or surveillance.
+Lulu reduces repeated adult prompting and supports participation, transitions, independence, and co-regulation — without diagnosis labels, dark patterns, or surveillance.
+
+> Lulu is both the product name and the in-app companion character. The product IS Lulu.
 
 ---
 

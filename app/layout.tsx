@@ -3,17 +3,17 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Souul — Guided routines for neurodivergent children',
-    template: '%s | Souul',
+    default: 'Lulu — A calm guide for your child\'s day',
+    template: '%s | Lulu',
   },
   description:
-    'Build visual guided sequences that help neurodivergent children move through their day with confidence. Made for families, used at home, school, and therapy.',
-  keywords: ['autism', 'ADHD', 'visual routine', 'neurodivergent', 'guided sequence', 'children', 'caregiver'],
+    'Lulu helps neurodivergent children move through their day with confidence. Build gentle visual routines with voice and music cues — for home, school, and everywhere in between.',
+  keywords: ['visual routine', 'neurodivergent children', 'calm guide', 'daily routine', 'ADHD', 'autism', 'caregiver', 'guided sequence'],
   openGraph: {
-    title: 'Souul — Guided routines for neurodivergent children',
-    description: 'Build visual guided sequences that help neurodivergent children move through their day with confidence.',
-    url: 'https://souul.app',
-    siteName: 'Souul',
+    title: 'Lulu — A calm guide for your child\'s day',
+    description: 'Lulu helps neurodivergent children move through their day with confidence. Gentle routines, warm cues, happier transitions.',
+    url: 'https://heylulu.app',
+    siteName: 'Lulu',
     locale: 'en_GB',
     type: 'website',
   },
