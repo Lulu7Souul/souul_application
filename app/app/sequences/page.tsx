@@ -29,8 +29,9 @@ export default async function SequencesPage({
   // Load all system templates
   const { data: templates } = await supabase
     .from('sequences')
-    .select('id, title, type')
+    .select('id, title, type, template_group')
     .eq('is_template', true)
+    .order('template_group')
     .order('title')
 
   // Load child profiles for the "assign to child" dropdown

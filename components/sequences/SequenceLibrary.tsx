@@ -17,6 +17,7 @@ interface Template {
   id: string
   title: string
   type: string
+  template_group: string | null
 }
 
 interface Profile {
@@ -41,11 +42,21 @@ const TYPE_LABEL: Record<string, string> = {
   routine: 'Routine', story: 'Story', practice: 'Practice', calm: 'Calm',
 }
 
+type TemplateGroup = 'morning' | 'activity' | 'afternoon' | 'evening'
+
+const GROUPS: { key: TemplateGroup; label: string; icon: string }[] = [
+  { key: 'morning',   label: 'Morning',   icon: '🌅' },
+  { key: 'activity',  label: 'Activity',  icon: '🎒' },
+  { key: 'afternoon', label: 'Afternoon', icon: '🌤' },
+  { key: 'evening',   label: 'Evening',   icon: '🌙' },
+]
+
 export function SequenceLibrary({ mySequences, templates, profiles, initialTab, isOnboarding }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<'mine' | 'templates'>(
     isOnboarding || mySequences.length === 0 ? 'templates' : initialTab
   )
+  const [group, setGroup] = useState<TemplateGroup>('morning')
   const [forking, setForking] = useState<string | null>(null)
   const [selectedProfile, setSelectedProfile] = useState(profiles[0]?.id ?? '')
 
@@ -66,6 +77,8 @@ export function SequenceLibrary({ mySequences, templates, profiles, initialTab, 
       setForking(null)
     }
   }
+
+  const groupedTemplates = templates.filter(t => t.template_group === group)
 
   return (
     <div className="space-y-6">
@@ -89,23 +102,7 @@ export function SequenceLibrary({ mySequences, templates, profiles, initialTab, 
         </div>
       )}
 
-      {/* Profile selector (when using templates) */}
-      {profiles.length > 1 && tab === 'templates' && (
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-text-secondary">For:</span>
-          <select
-            value={selectedProfile}
-            onChange={e => setSelectedProfile(e.target.value)}
-            className="rounded-xl border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-400"
-          >
-            {profiles.map(p => (
-              <option key={p.id} value={p.id}>{p.avatar_url} {p.name}</option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Tabs */}
+      {/* Main tabs */}
       <div className="flex gap-1 bg-surface-subtle rounded-xl p-1">
         {(['mine', 'templates'] as const).map(t => (
           <button
@@ -117,7 +114,7 @@ export function SequenceLibrary({ mySequences, templates, profiles, initialTab, 
                 : 'text-text-muted hover:text-text-secondary'
             }`}
           >
-            {t === 'mine' ? `My routines (${mySequences.length})` : `Lulu's templates (${templates.length})`}
+            {t === 'mine' ? `My routines (${mySequences.length})` : "Lulu's templates"}
           </button>
         ))}
       </div>
@@ -162,26 +159,67 @@ export function SequenceLibrary({ mySequences, templates, profiles, initialTab, 
 
       {/* Templates */}
       {tab === 'templates' && (
-        <div className="space-y-2">
-          {templates.map(tpl => (
-            <div
-              key={tpl.id}
-              className="flex items-center gap-4 rounded-xl bg-surface-raised border border-border px-4 py-4"
-            >
-              <span className="text-2xl">{TYPE_EMOJI[tpl.type] ?? '📋'}</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-text-primary">{tpl.title}</p>
-                <p className="text-xs text-text-muted mt-0.5">{TYPE_LABEL[tpl.type]} · Lulu default</p>
-              </div>
-              <button
-                onClick={() => useTemplate(tpl.id)}
-                disabled={forking === tpl.id || !selectedProfile}
-                className="rounded-lg bg-brand-50 border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100 transition-colors disabled:opacity-50 whitespace-nowrap"
+        <div className="space-y-4">
+          {/* Profile selector */}
+          {profiles.length > 1 && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-text-secondary">For:</span>
+              <select
+                value={selectedProfile}
+                onChange={e => setSelectedProfile(e.target.value)}
+                className="rounded-xl border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-400"
               >
-                {forking === tpl.id ? 'Adding…' : 'Use this'}
-              </button>
+                {profiles.map(p => (
+                  <option key={p.id} value={p.id}>{p.avatar_url} {p.name}</option>
+                ))}
+              </select>
             </div>
-          ))}
+          )}
+
+          {/* Group tabs */}
+          <div className="flex gap-1 bg-surface-subtle rounded-xl p-1">
+            {GROUPS.map(g => (
+              <button
+                key={g.key}
+                onClick={() => setGroup(g.key)}
+                className={`flex-1 flex flex-col items-center gap-0.5 rounded-lg py-2 transition-colors ${
+                  group === g.key
+                    ? 'bg-surface-raised text-text-primary shadow-sm'
+                    : 'text-text-muted hover:text-text-secondary'
+                }`}
+              >
+                <span className="text-base leading-none">{g.icon}</span>
+                <span className="text-xs font-medium">{g.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Template list for selected group */}
+          <div className="space-y-2">
+            {groupedTemplates.length === 0 ? (
+              <p className="text-center text-text-muted py-8 text-sm">No templates in this group yet.</p>
+            ) : (
+              groupedTemplates.map(tpl => (
+                <div
+                  key={tpl.id}
+                  className="flex items-center gap-4 rounded-xl bg-surface-raised border border-border px-4 py-4"
+                >
+                  <span className="text-2xl">{TYPE_EMOJI[tpl.type] ?? '📋'}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-text-primary">{tpl.title}</p>
+                    <p className="text-xs text-text-muted mt-0.5">Lulu default · editable</p>
+                  </div>
+                  <button
+                    onClick={() => useTemplate(tpl.id)}
+                    disabled={forking === tpl.id || !selectedProfile}
+                    className="rounded-lg bg-brand-50 border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100 transition-colors disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {forking === tpl.id ? 'Adding…' : 'Use this'}
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
