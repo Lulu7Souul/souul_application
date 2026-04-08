@@ -282,5 +282,47 @@ BEGIN
       ((SELECT id FROM seq), 7, 'Dry yourself',         'standard', 'pacing',     60,   'Use your towel to dry yourself all over.'),
       ((SELECT id FROM seq), 8, 'Pyjamas on!',          'standard', 'celebration',NULL, 'Put on your pyjamas. All clean and cosy!');
 
+    -- ============================================================
+    -- TEMPLATE 14: Get in the Car
+    -- ============================================================
+    WITH seq AS (
+      INSERT INTO public.sequences (
+        id, owner_id, title, type, is_template, is_published, completion_action, reward_text
+      ) VALUES (
+        '00000000-0000-0000-0000-000000000014',
+        '00000000-0000-0000-0000-000000000000',
+        'Get in the Car', 'routine', TRUE, TRUE,
+        'celebrate', 'Buckled up and ready to go!'
+      ) RETURNING id
+    )
+    INSERT INTO public.steps (sequence_id, order_index, title, step_type, cue_type, duration_seconds, help_text) VALUES
+      ((SELECT id FROM seq), 1, 'Get your things',      'standard', 'start',      60,  'Get anything you need to bring with you.'),
+      ((SELECT id FROM seq), 2, 'Walk to the car',      'standard', 'transition', 30,  'Walk to the car. Stay close.'),
+      ((SELECT id FROM seq), 3, 'Open the door',        'standard', 'transition', 15,  'Open your door and get in carefully.'),
+      ((SELECT id FROM seq), 4, 'Sit in your seat',     'standard', 'transition', 15,  'Sit down in your seat.'),
+      ((SELECT id FROM seq), 5, 'Put on your seatbelt', 'standard', 'pacing',     30,  'Pull the seatbelt across and click it in. Can you hear the click?'),
+      ((SELECT id FROM seq), 6, 'Ready to go!',         'standard', 'celebration',NULL,'Seatbelt on. All ready. Let''s go!');
+
+    -- ============================================================
+    -- TEMPLATE 15: Get out of the Car
+    -- ============================================================
+    WITH seq AS (
+      INSERT INTO public.sequences (
+        id, owner_id, title, type, is_template, is_published, completion_action, reward_text
+      ) VALUES (
+        '00000000-0000-0000-0000-000000000015',
+        '00000000-0000-0000-0000-000000000000',
+        'Get out of the Car', 'routine', TRUE, TRUE,
+        'celebrate', 'Out of the car — well done!'
+      ) RETURNING id
+    )
+    INSERT INTO public.steps (sequence_id, order_index, title, step_type, cue_type, duration_seconds, help_text) VALUES
+      ((SELECT id FROM seq), 1, 'Car has stopped',      'standard', 'start',      15,  'The car has stopped. Wait until it is safe.'),
+      ((SELECT id FROM seq), 2, 'Undo your seatbelt',   'standard', 'transition', 15,  'Press the button and take off your seatbelt.'),
+      ((SELECT id FROM seq), 3, 'Get your things',      'standard', 'transition', 30,  'Pick up anything you brought with you.'),
+      ((SELECT id FROM seq), 4, 'Open the door',        'standard', 'transition', 15,  'Open your door carefully and step out.'),
+      ((SELECT id FROM seq), 5, 'Stay on the pavement', 'standard', 'calm',       15,  'Step onto the pavement and wait. Do not go near the road.'),
+      ((SELECT id FROM seq), 6, 'All out!',             'standard', 'celebration',NULL,'Out of the car safely. Great job!');
+
   END IF;
 END $$;
