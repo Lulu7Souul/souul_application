@@ -24,6 +24,7 @@ interface ProfileData {
   voice_mode: string
   lulu_voice_uri: string | null
   calm_sequence_id: string | null
+  accessory_emojis?: string[]
 }
 
 export function PlayerClient({ sequenceId }: { sequenceId: string }) {
@@ -59,7 +60,8 @@ export function PlayerClient({ sequenceId }: { sequenceId: string }) {
         lulu_voice_uri: seqData.profile.lulu_voice_uri ?? undefined,
         rate: 0.85, pitch: 1.0, volume: 0.9,
       })
-      setDailyReward(calculateDailyReward(rewardData.tasksCompleted))
+      const chosenEmojis = seqData.profile.accessory_emojis ?? undefined
+      setDailyReward(calculateDailyReward(rewardData.tasksCompleted, chosenEmojis))
       setState('playing')
     }
 
@@ -79,10 +81,11 @@ export function PlayerClient({ sequenceId }: { sequenceId: string }) {
     })
 
     // Recalculate reward after this completion
-    const prevCount = dailyReward.tasksCompleted
-    const newCount  = prevCount + 1
-    const newReward = calculateDailyReward(newCount)
-    const earned    = justEarnedAccessory(prevCount, newCount)
+    const chosenEmojis = profile?.accessory_emojis ?? undefined
+    const prevCount    = dailyReward.tasksCompleted
+    const newCount     = prevCount + 1
+    const newReward    = calculateDailyReward(newCount, chosenEmojis)
+    const earned       = justEarnedAccessory(prevCount, newCount, chosenEmojis)
 
     setDailyReward(newReward)
     setNewlyEarned(earned)

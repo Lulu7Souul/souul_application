@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   // Verify profile belongs to this user
   const { data: profile } = await supabase
     .from('child_profiles')
-    .select('id, name, avatar_url')
+    .select('id, name, avatar_url, accessory_emojis')
     .eq('id', profileId)
     .eq('owner_id', user.id)
     .single()

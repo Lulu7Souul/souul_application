@@ -11,13 +11,18 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { name, avatar_url, audio_enabled, motion_enabled, communication_mode, pin } = body
+  const { name, avatar_url, audio_enabled, motion_enabled, communication_mode,
+          voice_mode, lulu_voice_uri, accessory_emojis, pin } = body
 
   if (!name || !pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
   }
 
-  // Hash PIN — never store plaintext
+  // Validate accessory_emojis — must be array of exactly 5 strings
+  const emojis = Array.isArray(accessory_emojis) && accessory_emojis.length === 5
+    ? accessory_emojis
+    : ['⭐', '🎀', '✨', '🌈', '👑']
+
   const pin_hash = await bcrypt.hash(pin, 10)
 
   const { data, error } = await supabase
@@ -29,6 +34,9 @@ export async function POST(request: NextRequest) {
       audio_enabled: audio_enabled ?? true,
       motion_enabled: motion_enabled ?? true,
       communication_mode: communication_mode ?? 'symbols_only',
+      voice_mode: voice_mode ?? 'lulu',
+      lulu_voice_uri: lulu_voice_uri ?? null,
+      accessory_emojis: emojis,
       pin_hash,
     })
     .select('id')

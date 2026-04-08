@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { filterCalmVoices } from '@/lib/types/voice'
+import { EmojiPicker } from '@/components/profiles/EmojiPicker'
+import { DEFAULT_ACCESSORIES } from '@/lib/emoji-library'
 import type { VoiceMode } from '@/lib/types/voice'
 
 const AVATAR_EMOJIS = ['🌟', '🌈', '🦋', '🐢', '🦁', '🐬', '🌸', '🦉', '🐻', '🌙', '☀️', '🌿']
@@ -13,15 +15,21 @@ interface FormState {
   avatar: string
   voiceMode: VoiceMode
   luluVoiceUri: string
-  audioEnabled: boolean
-  motionEnabled: boolean
   pin: string
   pinConfirm: string
+  accessories: string[]  // 5 chosen emojis in order
 }
+
+const STEPS = [
+  { label: 'About your child' },
+  { label: 'Lulu\'s voice' },
+  { label: 'Reward emojis' },
+  { label: 'Child mode PIN' },
+] as const
 
 export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -31,14 +39,12 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
     avatar: '🌟',
     voiceMode: 'lulu',
     luluVoiceUri: '',
-    audioEnabled: true,
-    motionEnabled: true,
     pin: '',
     pinConfirm: '',
+    accessories: [...DEFAULT_ACCESSORIES],
   })
 
   useEffect(() => {
-    // Load available voices for Lulu voice selection
     const loadVoices = () => {
       const voices = filterCalmVoices(window.speechSynthesis?.getVoices() ?? [])
       setAvailableVoices(voices)
@@ -57,41 +63,31 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
   }
 
   async function handleSubmit() {
-    if (form.pin.length !== 4) {
-      setError('Please set a 4-digit PIN for child mode.')
-      return
-    }
-    if (form.pin !== form.pinConfirm) {
-      setError('PINs do not match. Please try again.')
-      return
-    }
+    if (form.pin.length !== 4) { setError('Please set a 4-digit PIN.'); return }
+    if (form.pin !== form.pinConfirm) { setError('PINs do not match.'); return }
 
     setLoading(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
 
-    // Hash the PIN server-side via API route
     const res = await fetch('/api/profiles', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: form.name.trim(),
         avatar_url: form.avatar,
-        audio_enabled: form.audioEnabled,
-        motion_enabled: form.motionEnabled,
-        communication_mode: 'symbols_only',  // default for early years
+        audio_enabled: true,
+        motion_enabled: true,
+        communication_mode: 'symbols_only',
         voice_mode: form.voiceMode,
         lulu_voice_uri: form.luluVoiceUri,
+        accessory_emojis: form.accessories,
         pin: form.pin,
       }),
     })
 
-    if (!res.ok) {
-      setError('Something went wrong. Please try again.')
-      setLoading(false)
-      return
-    }
+    if (!res.ok) { setError('Something went wrong. Please try again.'); setLoading(false); return }
 
     router.push(isOnboarding ? '/app/sequences?onboarding=true' : '/app/profiles')
     router.refresh()
@@ -101,24 +97,25 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
     <div className="space-y-8">
       {/* Step indicator */}
       <div className="flex items-center gap-2">
-        {([1, 2, 3] as const).map(s => (
-          <div key={s} className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-              step === s ? 'bg-brand-500 text-white' :
-              step > s ? 'bg-brand-100 text-brand-600' :
-              'bg-surface-subtle text-text-muted'
-            }`}>
-              {step > s ? '✓' : s}
+        {STEPS.map((s, idx) => {
+          const n = (idx + 1) as 1 | 2 | 3 | 4
+          return (
+            <div key={n} className="flex items-center gap-2">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+                step === n ? 'bg-brand-500 text-white' :
+                step > n   ? 'bg-brand-100 text-brand-600' :
+                             'bg-surface-subtle text-text-muted'
+              }`}>
+                {step > n ? '✓' : n}
+              </div>
+              {n < 4 && <div className={`h-px w-6 ${step > n ? 'bg-brand-300' : 'bg-border'}`} />}
             </div>
-            {s < 3 && <div className={`h-px w-8 ${step > s ? 'bg-brand-300' : 'bg-border'}`} />}
-          </div>
-        ))}
-        <span className="ml-2 text-sm text-text-muted">
-          {step === 1 ? 'About your child' : step === 2 ? 'Lulu\'s voice' : 'Child mode PIN'}
-        </span>
+          )
+        })}
+        <span className="ml-2 text-sm text-text-muted">{STEPS[step - 1].label}</span>
       </div>
 
-      {/* Step 1 — Name and avatar */}
+      {/* ── Step 1: Name & Avatar ── */}
       {step === 1 && (
         <div className="space-y-6">
           <div className="space-y-2">
@@ -149,7 +146,6 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
                       ? 'bg-brand-100 ring-2 ring-brand-500 scale-110'
                       : 'bg-surface-subtle hover:bg-surface-raised'
                   }`}
-                  aria-label={`Select ${emoji} avatar`}
                 >
                   {emoji}
                 </button>
@@ -157,32 +153,31 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
             </div>
           </div>
 
+          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
           <button
             onClick={() => {
               if (!form.name.trim()) { setError('Please enter your child\'s name.'); return }
-              setError('')
-              setStep(2)
+              setError(''); setStep(2)
             }}
             className="w-full rounded-xl bg-brand-500 px-4 py-3 font-semibold text-white hover:bg-brand-600 transition-colors"
           >
             Next →
           </button>
-          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
         </div>
       )}
 
-      {/* Step 2 — Voice */}
+      {/* ── Step 2: Voice ── */}
       {step === 2 && (
         <div className="space-y-6">
           <p className="text-sm text-text-secondary">
-            Lulu can guide {form.name} through each step with a voice. Choose what works best.
+            Lulu can guide {form.name} through each step with a voice.
           </p>
 
           <div className="space-y-3">
             {([
-              { mode: 'lulu' as VoiceMode, label: 'Lulu\'s voice', desc: 'A calm, clear voice reads each step aloud' },
-              { mode: 'parent' as VoiceMode, label: 'Your voice', desc: 'Record your own voice for each step (most personal)' },
-              { mode: 'off' as VoiceMode, label: 'No voice', desc: 'Visuals and music only — no spoken words' },
+              { mode: 'lulu'   as VoiceMode, label: 'Lulu\'s voice', desc: 'A calm, clear voice reads each step aloud' },
+              { mode: 'parent' as VoiceMode, label: 'Your voice',    desc: 'Record your own voice for each step' },
+              { mode: 'off'    as VoiceMode, label: 'No voice',      desc: 'Visuals and music only' },
             ]).map(({ mode, label, desc }) => (
               <button
                 key={mode}
@@ -200,12 +195,9 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
             ))}
           </div>
 
-          {/* Voice picker for Lulu mode */}
           {form.voiceMode === 'lulu' && availableVoices.length > 1 && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-text-primary">
-                Choose a voice
-              </label>
+              <label className="text-sm font-medium text-text-primary">Choose a voice tone</label>
               <select
                 value={form.luluVoiceUri}
                 onChange={e => set('luluVoiceUri', e.target.value)}
@@ -219,15 +211,37 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
           )}
 
           <div className="flex gap-3">
+            <button onClick={() => setStep(1)} className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors">← Back</button>
+            <button onClick={() => setStep(3)} className="flex-1 rounded-xl bg-brand-500 px-4 py-3 font-semibold text-white hover:bg-brand-600 transition-colors">Next →</button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Step 3: Reward Emojis ── */}
+      {step === 3 && (
+        <div className="space-y-5">
+          <div className="space-y-1">
+            <p className="text-sm text-text-secondary">
+              Pick 5 emojis for {form.name}'s reward chart — one unlocks after each routine completed.
+              Tap to choose, tap again to swap.
+            </p>
+          </div>
+
+          <EmojiPicker
+            selected={form.accessories}
+            onChange={emojis => set('accessories', emojis)}
+          />
+
+          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+
+          <div className="flex gap-3">
+            <button onClick={() => setStep(2)} className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors">← Back</button>
             <button
-              onClick={() => setStep(1)}
-              className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={() => setStep(3)}
-              className="flex-2 flex-1 rounded-xl bg-brand-500 px-4 py-3 font-semibold text-white hover:bg-brand-600 transition-colors"
+              onClick={() => {
+                if (form.accessories.length < 5) { setError('Please choose all 5 reward emojis.'); return }
+                setError(''); setStep(4)
+              }}
+              className="flex-1 rounded-xl bg-brand-500 px-4 py-3 font-semibold text-white hover:bg-brand-600 transition-colors"
             >
               Next →
             </button>
@@ -235,23 +249,20 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
         </div>
       )}
 
-      {/* Step 3 — PIN */}
-      {step === 3 && (
+      {/* ── Step 4: PIN ── */}
+      {step === 4 && (
         <div className="space-y-6">
           <p className="text-sm text-text-secondary">
-            Set a 4-digit PIN to enter and exit child mode. {form.name} won't need it — only you do.
+            Set a 4-digit PIN to enter and exit child mode. Only you need it.
           </p>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="pin" className="text-sm font-medium text-text-primary">
-                Choose a PIN
-              </label>
+              <label htmlFor="pin" className="text-sm font-medium text-text-primary">Choose a PIN</label>
               <input
                 id="pin"
                 type="password"
                 inputMode="numeric"
-                pattern="[0-9]{4}"
                 maxLength={4}
                 value={form.pin}
                 onChange={e => set('pin', e.target.value.replace(/\D/g, '').slice(0, 4))}
@@ -259,16 +270,12 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
                 placeholder="••••"
               />
             </div>
-
             <div className="space-y-2">
-              <label htmlFor="pin-confirm" className="text-sm font-medium text-text-primary">
-                Confirm PIN
-              </label>
+              <label htmlFor="pin-confirm" className="text-sm font-medium text-text-primary">Confirm PIN</label>
               <input
                 id="pin-confirm"
                 type="password"
                 inputMode="numeric"
-                pattern="[0-9]{4}"
                 maxLength={4}
                 value={form.pinConfirm}
                 onChange={e => set('pinConfirm', e.target.value.replace(/\D/g, '').slice(0, 4))}
@@ -281,12 +288,7 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
           {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
           <div className="flex gap-3">
-            <button
-              onClick={() => setStep(2)}
-              className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors"
-            >
-              ← Back
-            </button>
+            <button onClick={() => setStep(3)} className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors">← Back</button>
             <button
               onClick={handleSubmit}
               disabled={loading || form.pin.length < 4}

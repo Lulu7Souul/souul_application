@@ -31,22 +31,14 @@ export async function GET(request: NextRequest) {
   // Sort steps
   const steps = [...(sequence.steps ?? [])].sort((a, b) => a.order_index - b.order_index)
 
-  // Load child profile voice settings
   const { data: profile } = await supabase
     .from('child_profiles')
-    .select('name, avatar_url, calm_sequence_id')
+    .select('name, avatar_url, calm_sequence_id, voice_mode, lulu_voice_uri, accessory_emojis')
     .eq('id', profileId)
     .eq('owner_id', user.id)
     .single()
 
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
 
-  return NextResponse.json({
-    sequence: { ...sequence, steps },
-    profile: {
-      ...profile,
-      voice_mode: 'lulu',       // TODO: store on profile in next migration
-      lulu_voice_uri: null,
-    },
-  })
+  return NextResponse.json({ sequence: { ...sequence, steps }, profile })
 }

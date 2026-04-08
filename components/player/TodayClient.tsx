@@ -52,15 +52,17 @@ export function TodayClient() {
         fetch(`/api/rewards/today?profileId=${profileId}`),
       ])
 
+      let chosenEmojis: string[] | undefined
       if (todayRes.ok) {
         const data = await todayRes.json()
         setSequences(data.sequences)
         setProfile(data.profile)
+        chosenEmojis = data.profile?.accessory_emojis ?? undefined
       }
 
       if (rewardRes.ok) {
         const data = await rewardRes.json()
-        setDailyReward(calculateDailyReward(data.tasksCompleted))
+        setDailyReward(calculateDailyReward(data.tasksCompleted, chosenEmojis))
       }
 
       setLoading(false)
