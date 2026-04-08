@@ -139,5 +139,9 @@ export function getEmojiQuote(emoji: string): string {
   return entry?.quote ?? `${emoji} — you earned it today!`
 }
 
-// Default 5 accessories if parent skips the picker
-export const DEFAULT_ACCESSORIES = ['⭐', '🎀', '✨', '🌈', '👑']
+// Default 5 accessories if parent skips the picker.
+// 👑 is intentionally excluded — it is always the fixed 6th Crown tier.
+export const DEFAULT_ACCESSORIES = ['⭐', '🎀', '✨', '🌈', '🌟']
+
+// Emojis reserved by the system — cannot be chosen in the picker
+export const RESERVED_EMOJIS = ['👑']

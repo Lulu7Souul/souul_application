@@ -16,11 +16,12 @@ export function DailySummary({ childName, avatarEmoji, reward, onClose }: Props)
   const { tasksCompleted, unlockedAccessories } = reward
 
   function getMessage() {
-    if (tasksCompleted === 0) return 'See you next time!'
-    if (tasksCompleted === 1) return 'You did one routine today. Well done!'
-    if (tasksCompleted <= 3) return `You did ${tasksCompleted} routines today. Great work!`
-    if (tasksCompleted <= 4) return `${tasksCompleted} routines! You had a brilliant day!`
-    return `${tasksCompleted} routines — what an amazing day!`
+    if (tasksCompleted === 0)  return 'See you next time!'
+    if (tasksCompleted === 1)  return 'You did one routine today. Well done!'
+    if (tasksCompleted <= 3)  return `You did ${tasksCompleted} routines today. Great work!`
+    if (tasksCompleted === 5) return `Five routines! You had a brilliant day!`
+    if (reward.hasCrown)      return `${tasksCompleted} routines — you wore the crown today! 👑`
+    return `${tasksCompleted} routines! You had a brilliant day!`
   }
 
   return (
@@ -42,15 +43,27 @@ export function DailySummary({ childName, avatarEmoji, reward, onClose }: Props)
 
       {/* Accessories earned today */}
       {unlockedAccessories.length > 0 && (
-        <div className="rounded-2xl bg-warm-50 border border-warm-200 px-6 py-4 w-full max-w-xs space-y-3">
+        <div className={`rounded-2xl border px-6 py-4 w-full max-w-xs space-y-3 ${
+          reward.hasCrown
+            ? 'bg-warm-50 border-warm-300 shadow-md'
+            : 'bg-warm-50 border-warm-200'
+        }`}>
           <p className="text-sm font-semibold text-warm-700 text-center">
-            Today's rewards
+            {reward.hasCrown ? '👑 Crown day!' : 'Today\'s rewards'}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            {unlockedAccessories.map(a => (
-              <div key={a.id} className="flex flex-col items-center gap-1">
-                <span className="text-3xl">{a.emoji}</span>
-                <span className="text-xs text-text-muted">{a.label}</span>
+            {unlockedAccessories.map((a, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <span className={`${a.isCrown ? 'text-4xl' : 'text-3xl'} ${
+                  a.isCrown ? 'drop-shadow-lg' : ''
+                }`}
+                  style={a.isCrown ? { filter: 'drop-shadow(0 0 6px gold)' } : {}}
+                >
+                  {a.emoji}
+                </span>
+                {a.isCrown && (
+                  <span className="text-xs font-semibold text-warm-600">Crown!</span>
+                )}
               </div>
             ))}
           </div>

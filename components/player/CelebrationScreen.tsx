@@ -66,8 +66,15 @@ export function CelebrationScreen({
         </div>
       )}
 
-      {/* Next accessory nudge */}
-      {dailyReward.nextAccessory && (
+      {/* Crown nudge — special phrasing */}
+      {dailyReward.nextAccessory?.isCrown && (
+        <p className="text-sm font-medium text-warm-600">
+          {dailyReward.tasksUntilNext} more routine{dailyReward.tasksUntilNext === 1 ? '' : 's'} to earn the 👑 crown!
+        </p>
+      )}
+
+      {/* Regular next accessory nudge */}
+      {dailyReward.nextAccessory && !dailyReward.nextAccessory.isCrown && (
         <p className="text-sm text-text-muted">
           {dailyReward.tasksUntilNext} more routine{dailyReward.tasksUntilNext === 1 ? '' : 's'} to earn{' '}
           {dailyReward.nextAccessory.emoji}

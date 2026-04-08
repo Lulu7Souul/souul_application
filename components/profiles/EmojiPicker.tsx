@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { EMOJI_BY_CATEGORY, EMOJI_CATEGORIES, getEmojiQuote } from '@/lib/emoji-library'
+import { EMOJI_BY_CATEGORY, EMOJI_CATEGORIES, getEmojiQuote, RESERVED_EMOJIS } from '@/lib/emoji-library'
 
 interface Props {
   selected: string[]            // exactly 5 emojis in order
@@ -85,7 +85,9 @@ export function EmojiPicker({ selected, onChange }: Props) {
 
       {/* Emoji grid */}
       <div className="grid grid-cols-8 gap-1.5 max-h-52 overflow-y-auto">
-        {(EMOJI_BY_CATEGORY[activeCategory] ?? []).map(({ emoji }) => {
+        {(EMOJI_BY_CATEGORY[activeCategory] ?? [])
+        .filter(({ emoji }) => !RESERVED_EMOJIS.includes(emoji))
+        .map(({ emoji }) => {
           const isSelected  = selected.includes(emoji)
           const isMaxed     = selected.length >= 5 && !isSelected
 

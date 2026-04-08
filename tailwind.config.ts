@@ -80,7 +80,8 @@ const config: Config = {
       animation: {
         'bounce-once': 'bounce-once 0.7s ease-in-out',
         'pop-in':      'pop-in 0.4s ease-out forwards',
-        'spin-slow':   'spin-slow 8s linear infinite',
+        'spin-slow':         'spin-slow 8s linear infinite',
+        'spin-slow-reverse': 'spin-slow 12s linear infinite reverse',
       },
     },
   },
