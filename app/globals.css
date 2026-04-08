@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, sans-serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Child player: prevent accidental text selection */
+  .player-surface {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Child player: ensure full viewport, no scroll */
+  .player-full {
+    height: 100dvh;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+  }
+}
+
+@layer components {
+  /* Adult workspace nav item */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:bg-surface-subtle hover:text-text-primary transition-colors text-sm font-medium;
+  }
+
+  .nav-item-active {
+    @apply bg-brand-50 text-brand-700;
+  }
+
+  /* Child player action buttons */
+  .player-btn {
+    @apply flex-1 h-player-btn rounded-player font-semibold text-player-action transition-transform active:scale-95 select-none;
+    min-height: var(--player-btn);
+    touch-action: manipulation;
+  }
+
+  .player-btn-primary {
+    @apply player-btn bg-brand-500 text-white;
+  }
+
+  .player-btn-secondary {
+    @apply player-btn bg-surface-subtle text-text-primary border-2 border-border;
+  }
+
+  .player-btn-calm {
+    @apply player-btn bg-calm-100 text-calm-700;
+  }
+
+  .player-btn-help {
+    @apply player-btn bg-warm-100 text-warm-700;
+  }
+}
