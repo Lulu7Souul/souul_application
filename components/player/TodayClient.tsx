@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useActiveProfile } from '@/lib/useActiveProfile'
+import { RewardChart } from '@/components/player/RewardChart'
+import { DailySummary } from '@/components/player/DailySummary'
+import { calculateDailyReward } from '@/lib/rewards'
+import type { DailyReward } from '@/lib/rewards'
 
 interface Sequence {
   id: string
@@ -19,34 +23,46 @@ const TYPE_EMOJI: Record<string, string> = {
   routine: '📋', story: '📖', practice: '✏️', calm: '🌿',
 }
 
-// Soft background colours per sequence type — child mode is warm and visual
 const TYPE_BG: Record<string, string> = {
-  routine: 'bg-brand-50  border-brand-200',
-  story:   'bg-calm-50   border-calm-200',
-  practice:'bg-warm-50   border-warm-200',
-  calm:    'bg-brand-50  border-brand-100',
+  routine:  'bg-brand-50  border-brand-200',
+  story:    'bg-calm-50   border-calm-200',
+  practice: 'bg-warm-50   border-warm-200',
+  calm:     'bg-brand-50  border-brand-100',
 }
 
 export function TodayClient() {
   const router = useRouter()
   const { profileId, ready } = useActiveProfile()
-  const [sequences, setSequences] = useState<Sequence[]>([])
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [exitPin, setExitPin] = useState('')
-  const [showExit, setShowExit] = useState(false)
-  const [exitError, setExitError] = useState(false)
-  const [exiting, setExiting] = useState(false)
+  const [sequences, setSequences]     = useState<Sequence[]>([])
+  const [profile, setProfile]         = useState<Profile | null>(null)
+  const [dailyReward, setDailyReward] = useState<DailyReward>(calculateDailyReward(0))
+  const [loading, setLoading]         = useState(true)
+  const [showSummary, setShowSummary] = useState(false)
+  const [exitPin, setExitPin]         = useState('')
+  const [showExit, setShowExit]       = useState(false)
+  const [exitError, setExitError]     = useState(false)
+  const [exiting, setExiting]         = useState(false)
 
   useEffect(() => {
     if (!ready || !profileId) return
 
     async function load() {
-      const res = await fetch(`/api/player/today?profileId=${profileId}`)
-      if (!res.ok) { setLoading(false); return }
-      const data = await res.json()
-      setSequences(data.sequences)
-      setProfile(data.profile)
+      const [todayRes, rewardRes] = await Promise.all([
+        fetch(`/api/player/today?profileId=${profileId}`),
+        fetch(`/api/rewards/today?profileId=${profileId}`),
+      ])
+
+      if (todayRes.ok) {
+        const data = await todayRes.json()
+        setSequences(data.sequences)
+        setProfile(data.profile)
+      }
+
+      if (rewardRes.ok) {
+        const data = await rewardRes.json()
+        setDailyReward(calculateDailyReward(data.tasksCompleted))
+      }
+
       setLoading(false)
     }
 
@@ -64,8 +80,9 @@ export function TodayClient() {
     })
 
     if (res.ok) {
-      sessionStorage.removeItem('lulu_active_profile')
-      router.replace('/app/dashboard')
+      // Show daily summary before fully exiting
+      setShowExit(false)
+      setShowSummary(true)
     } else {
       setExitError(true)
       setExitPin('')
@@ -73,11 +90,28 @@ export function TodayClient() {
     }
   }
 
+  function completeSummaryExit() {
+    sessionStorage.removeItem('lulu_active_profile')
+    router.replace('/app/dashboard')
+  }
+
   if (!ready || loading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-4xl animate-pulse">🌟</div>
       </div>
+    )
+  }
+
+  // Daily summary screen — shown after PIN verified, before returning to parent
+  if (showSummary && profile) {
+    return (
+      <DailySummary
+        childName={profile.name}
+        avatarEmoji={profile.avatar_url ?? '🌟'}
+        reward={dailyReward}
+        onClose={completeSummaryExit}
+      />
     )
   }
 
@@ -109,11 +143,7 @@ export function TodayClient() {
                 key={i}
                 disabled={exiting}
                 onClick={() => {
-                  if (d === 'del') {
-                    setExitPin(p => p.slice(0, -1))
-                    setExitError(false)
-                    return
-                  }
+                  if (d === 'del') { setExitPin(p => p.slice(0,-1)); setExitError(false); return }
                   const next = exitPin + String(d)
                   setExitPin(next)
                   setExitError(false)
@@ -139,8 +169,8 @@ export function TodayClient() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Child header — name + avatar, warm and simple */}
-      <div className="flex items-center justify-between px-5 pt-8 pb-4">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-8 pb-3">
         <div className="flex items-center gap-3">
           {profile?.avatar_url && (
             <span className="text-4xl">{profile.avatar_url}</span>
@@ -152,8 +182,6 @@ export function TodayClient() {
             </p>
           </div>
         </div>
-
-        {/* Exit button — subtle, top right, requires PIN */}
         <button
           onClick={() => setShowExit(true)}
           className="text-text-muted text-xs border border-border rounded-xl px-3 py-2 hover:bg-surface-subtle transition-colors"
@@ -163,12 +191,16 @@ export function TodayClient() {
         </button>
       </div>
 
-      {/* Lulu prompt */}
-      <p className="px-5 text-text-secondary text-base mb-4">
+      {/* Reward chart */}
+      {profile && (
+        <RewardChart reward={dailyReward} childName={profile.name} />
+      )}
+
+      <p className="px-5 text-text-secondary text-base mb-3">
         What would you like to do today?
       </p>
 
-      {/* Sequence cards — large, visual, easy to tap */}
+      {/* Sequence cards */}
       <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-3">
         {sequences.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-6">
@@ -181,7 +213,7 @@ export function TodayClient() {
             <button
               key={seq.id}
               onClick={() => router.push(`/play/${seq.id}`)}
-              className={`w-full flex items-center gap-5 rounded-2xl border-2 px-5 py-5 text-left active:scale-98 transition-all ${TYPE_BG[seq.type] ?? 'bg-surface-raised border-border'}`}
+              className={`w-full flex items-center gap-5 rounded-2xl border-2 px-5 py-5 text-left active:scale-[0.98] transition-all ${TYPE_BG[seq.type] ?? 'bg-surface-raised border-border'}`}
             >
               <span className="text-5xl">{TYPE_EMOJI[seq.type] ?? '📋'}</span>
               <span className="text-xl font-bold text-text-primary leading-snug">

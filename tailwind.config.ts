@@ -58,8 +58,29 @@ const config: Config = {
         player: '1.5rem',  // large rounded corners for child buttons
       },
       spacing: {
-        'touch-min': '44px',   // WCAG minimum touch target
-        'player-btn': '64px',  // Child mode button height
+        'touch-min': '44px',
+        'player-btn': '64px',
+      },
+      keyframes: {
+        'bounce-once': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '30%': { transform: 'translateY(-12px)' },
+          '60%': { transform: 'translateY(-6px)' },
+        },
+        'pop-in': {
+          '0%': { transform: 'scale(0.7)', opacity: '0' },
+          '70%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'spin-slow': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
+      animation: {
+        'bounce-once': 'bounce-once 0.7s ease-in-out',
+        'pop-in':      'pop-in 0.4s ease-out forwards',
+        'spin-slow':   'spin-slow 8s linear infinite',
       },
     },
   },
