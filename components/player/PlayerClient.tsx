@@ -25,6 +25,7 @@ interface ProfileData {
   lulu_voice_uri: string | null
   calm_sequence_id: string | null
   accessory_emojis?: string[]
+  transition_notice?: boolean
 }
 
 export function PlayerClient({ sequenceId }: { sequenceId: string }) {
@@ -148,6 +149,7 @@ export function PlayerClient({ sequenceId }: { sequenceId: string }) {
     <SequencePlayer
       sequence={sequence}
       voiceSettings={voiceSettings}
+      transitionEnabled={profile.transition_notice !== false}
       onComplete={handleComplete}
       onBreak={handleBreak}
     />

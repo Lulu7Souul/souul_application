@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
   const { name, avatar_url, audio_enabled, motion_enabled, communication_mode,
-          voice_mode, lulu_voice_uri, accessory_emojis, pin } = body
+          voice_mode, lulu_voice_uri, accessory_emojis, transition_notice, pin } = body
 
   if (!name || !pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       voice_mode: voice_mode ?? 'lulu',
       lulu_voice_uri: lulu_voice_uri ?? null,
       accessory_emojis: emojis,
+      transition_notice: transition_notice !== false,  // default true
       pin_hash,
     })
     .select('id')

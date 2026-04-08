@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ActionBar } from '@/components/player/ActionBar'
+import { TransitionNotice } from '@/components/player/TransitionNotice'
 import { playStepVoice } from '@/lib/voice'
 import { playSound, SOUNDS_BY_CUE_TYPE } from '@/lib/sounds'
 import type { Sequence, Step } from '@/lib/types/sequence'
@@ -12,6 +12,7 @@ import type { VoiceSettings } from '@/lib/types/voice'
 interface Props {
   sequence: Sequence
   voiceSettings: VoiceSettings
+  transitionEnabled: boolean
   onComplete: (log: SessionLogData) => void
   onBreak: () => void
 }
@@ -23,9 +24,10 @@ export interface SessionLogData {
   timeExtensionsCount: number
 }
 
-export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }: Props) {
+export function SequencePlayer({ sequence, voiceSettings, transitionEnabled, onComplete, onBreak }: Props) {
   const steps = sequence.steps ?? []
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
   const [timeLeft, setTimeLeft] = useState<number | null>(null)
   const [log, setLog] = useState<SessionLogData>({
@@ -37,8 +39,10 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const currentStep: Step | undefined = steps[currentIndex]
+  const nextStep: Step | undefined = steps[currentIndex + 1]
 
-  // On step change: play voice then music cue
+  // On step change: play voice then music cue.
+  // This only fires when currentIndex changes — i.e. AFTER the transition, not during.
   useEffect(() => {
     if (!currentStep) return
     setShowHelp(false)
@@ -47,8 +51,8 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
     const timeout = setTimeout(async () => {
       await playStepVoice(
         voiceSettings,
-        currentStep.help_text,   // voice script falls back to help_text
-        currentStep.audio_url,   // parent voice recording URL
+        currentStep.help_text,
+        currentStep.audio_url,
       )
 
       // Music cue plays after voice
@@ -69,7 +73,6 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
   useEffect(() => {
     if (timeLeft === null) return
     if (timeLeft <= 0) {
-      // Timer finished — prompt done (don't auto-advance, child decides)
       setTimeLeft(null)
       return
     }
@@ -81,21 +84,28 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
     }
   }, [timeLeft])
 
-  const advanceStep = useCallback(() => {
+  function handleDone() {
     if (timerRef.current) clearInterval(timerRef.current)
     setTimeLeft(null)
+    window.speechSynthesis?.cancel()
 
     if (currentIndex >= steps.length - 1) {
-      // Sequence complete
+      // Last step — complete the sequence
       onComplete(log)
       return
     }
-    setCurrentIndex(i => i + 1)
-  }, [currentIndex, steps.length, log, onComplete])
 
-  function handleDone() {
-    advanceStep()
+    if (transitionEnabled) {
+      setIsTransitioning(true)
+    } else {
+      setCurrentIndex(i => i + 1)
+    }
   }
+
+  const handleTransitionReady = useCallback(() => {
+    setIsTransitioning(false)
+    setCurrentIndex(i => i + 1)
+  }, [])
 
   function handleHelp() {
     setLog(l => ({ ...l, helpTappedCount: l.helpTappedCount + 1 }))
@@ -119,6 +129,18 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
       <div className="flex items-center justify-center h-full">
         <p className="text-text-muted">No steps in this routine.</p>
       </div>
+    )
+  }
+
+  // Transition screen — shown between steps when transitionEnabled
+  if (isTransitioning && nextStep) {
+    return (
+      <TransitionNotice
+        nextStep={nextStep}
+        stepNumber={currentIndex + 2}
+        totalSteps={steps.length}
+        onReady={handleTransitionReady}
+      />
     )
   }
 
@@ -150,10 +172,9 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
         </div>
       )}
 
-      {/* Main step content — fills available space */}
+      {/* Main step content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-4 min-h-0">
         {showHelp ? (
-          /* Help screen */
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <p className="text-4xl">💛</p>
             <p className="text-2xl font-semibold text-text-primary leading-relaxed max-w-xs">
@@ -167,7 +188,6 @@ export function SequencePlayer({ sequence, voiceSettings, onComplete, onBreak }:
             </button>
           </div>
         ) : (
-          /* Step visual */
           <div className="flex flex-col items-center gap-4 w-full max-w-sm">
             {currentStep.visual_url ? (
               <div className="relative w-full aspect-square rounded-3xl overflow-hidden bg-surface-subtle">

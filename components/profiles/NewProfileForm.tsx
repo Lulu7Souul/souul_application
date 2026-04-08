@@ -15,6 +15,7 @@ interface FormState {
   avatar: string
   voiceMode: VoiceMode
   luluVoiceUri: string
+  transitionNotice: boolean
   pin: string
   pinConfirm: string
   accessories: string[]  // 5 chosen emojis in order
@@ -39,6 +40,7 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
     avatar: '🌟',
     voiceMode: 'lulu',
     luluVoiceUri: '',
+    transitionNotice: true,
     pin: '',
     pinConfirm: '',
     accessories: [...DEFAULT_ACCESSORIES],
@@ -83,6 +85,7 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
         voice_mode: form.voiceMode,
         lulu_voice_uri: form.luluVoiceUri,
         accessory_emojis: form.accessories,
+        transition_notice: form.transitionNotice,
         pin: form.pin,
       }),
     })
@@ -209,6 +212,34 @@ export function NewProfileForm({ isOnboarding }: { isOnboarding: boolean }) {
               </select>
             </div>
           )}
+
+          {/* Transition notice toggle */}
+          <button
+            type="button"
+            onClick={() => set('transitionNotice', !form.transitionNotice)}
+            className={`w-full text-left rounded-xl border-2 px-4 py-4 transition-colors ${
+              form.transitionNotice
+                ? 'border-brand-500 bg-brand-50'
+                : 'border-border bg-surface-raised hover:bg-surface-subtle'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-text-primary">Step transition notice</p>
+                <p className="text-sm text-text-secondary mt-0.5">
+                  A short "what's next" screen appears between steps so {form.name || 'your child'} can prepare
+                </p>
+              </div>
+              {/* Toggle pill */}
+              <div className={`relative w-12 h-7 rounded-full flex-shrink-0 transition-colors ${
+                form.transitionNotice ? 'bg-brand-500' : 'bg-surface-subtle border border-border'
+              }`}>
+                <div className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-all ${
+                  form.transitionNotice ? 'left-6' : 'left-1'
+                }`} />
+              </div>
+            </div>
+          </button>
 
           <div className="flex gap-3">
             <button onClick={() => setStep(1)} className="flex-1 rounded-xl border-2 border-border px-4 py-3 font-medium text-text-primary hover:bg-surface-subtle transition-colors">← Back</button>

@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from('child_profiles')
-    .select('name, avatar_url, calm_sequence_id, voice_mode, lulu_voice_uri, accessory_emojis')
+    .select('name, avatar_url, calm_sequence_id, voice_mode, lulu_voice_uri, accessory_emojis, transition_notice')
     .eq('id', profileId)
     .eq('owner_id', user.id)
     .single()

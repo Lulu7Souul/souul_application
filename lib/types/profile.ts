@@ -13,6 +13,7 @@ export interface ChildProfile {
   communication_mode: CommunicationMode
   pin: string              // hashed — never returned to client in plaintext
   calm_sequence_id?: string
+  transition_notice: boolean
   created_at: string
 }
 
