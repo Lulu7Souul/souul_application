@@ -38,10 +38,18 @@ export default async function InsightsPage() {
       .order('created_at'),
   ])
 
+  const normalizedLogs = (logs ?? []).map(log => {
+    const seq = log.sequences
+    const sequences = Array.isArray(seq)
+      ? seq.length > 0 ? { title: String(seq[0]?.title ?? '') } : null
+      : seq ? { title: String((seq as { title: unknown }).title ?? '') } : null
+    return { ...log, sequences }
+  })
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <InsightsClient
-        logs={logs ?? []}
+        logs={normalizedLogs}
         profiles={profiles ?? []}
       />
     </div>
