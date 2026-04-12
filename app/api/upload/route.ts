@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
   const ext = file.name.split('.').pop()
   const filename = `${Date.now()}.${ext}`
   const path = `${user.id}/${sequenceId}/${type}/${filename}`
-  const bucket = 'sequence-assets'
+  const bucket = 'lulu-uploads'
 
   const arrayBuffer = await file.arrayBuffer()
   const { error: uploadError } = await supabase.storage
