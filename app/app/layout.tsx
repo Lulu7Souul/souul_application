@@ -33,7 +33,7 @@ export default async function AppLayout({
         <nav className="flex-1 px-3 py-4 space-y-1">
           <Link href="/app/dashboard"  className="nav-item">🏠 Home</Link>
           <Link href="/app/sequences"  className="nav-item">📋 Routines</Link>
-          <Link href="/app/profiles"   className="nav-item">👤 Profiles</Link>
+          <Link href="/app/profiles/new" className="nav-item">👤 Add profile</Link>
           <Link href="/app/insights"   className="nav-item">📊 Insights</Link>
           <Link href="/app/team"       className="nav-item">👥 Team</Link>
         </nav>
@@ -65,7 +65,7 @@ function MobileNav() {
     <nav className="flex items-center gap-1">
       <Link href="/app/dashboard"  className="p-2 text-text-muted hover:text-text-primary">🏠</Link>
       <Link href="/app/sequences"  className="p-2 text-text-muted hover:text-text-primary">📋</Link>
-      <Link href="/app/profiles"   className="p-2 text-text-muted hover:text-text-primary">👤</Link>
+      <Link href="/app/profiles/new" className="p-2 text-text-muted hover:text-text-primary">👤</Link>
       <Link href="/app/insights"   className="p-2 text-text-muted hover:text-text-primary">📊</Link>
       <Link href="/app/settings"   className="p-2 text-text-muted hover:text-text-primary">⚙️</Link>
     </nav>

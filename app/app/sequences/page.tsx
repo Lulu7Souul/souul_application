@@ -41,10 +41,19 @@ export default async function SequencesPage({
     .eq('owner_id', user.id)
     .order('created_at')
 
+  // Normalize child_profiles from join array → single object (Supabase returns array for joins)
+  const normalizedSequences = (mySequences ?? []).map(s => {
+    const cp = s.child_profiles
+    const child_profiles = Array.isArray(cp)
+      ? cp.length > 0 ? { name: String(cp[0]?.name ?? ''), avatar_url: String(cp[0]?.avatar_url ?? '') } : null
+      : cp ? { name: String((cp as { name: unknown }).name ?? ''), avatar_url: String((cp as { avatar_url: unknown }).avatar_url ?? '') } : null
+    return { ...s, child_profiles }
+  })
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <SequenceLibrary
-        mySequences={mySequences ?? []}
+        mySequences={normalizedSequences}
         templates={templates ?? []}
         profiles={profiles ?? []}
         initialTab={(searchParams.tab as 'mine' | 'templates') ?? 'mine'}
