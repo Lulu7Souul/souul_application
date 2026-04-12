@@ -247,3 +247,67 @@ CREATE POLICY "Owners can manage team"
 CREATE POLICY "Invitees can view their own invite"
   ON public.team_members FOR SELECT
   USING (auth.uid() = member_id OR member_email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+-- Migration 002: Add voice settings to child_profiles
+-- Date: 2026-04-08
+
+ALTER TABLE public.child_profiles
+  ADD COLUMN IF NOT EXISTS voice_mode TEXT NOT NULL DEFAULT 'lulu'
+    CHECK (voice_mode IN ('lulu', 'parent', 'off')),
+  ADD COLUMN IF NOT EXISTS lulu_voice_uri TEXT;
+-- Migration 003: Store chosen reward emojis on child profile
+-- Date: 2026-04-08
+-- 5 emojis chosen by parent at profile setup. Stored as JSONB array of strings.
+
+ALTER TABLE public.child_profiles
+  ADD COLUMN IF NOT EXISTS accessory_emojis JSONB NOT NULL
+    DEFAULT '["⭐","🎀","✨","🌈","👑"]'::jsonb;
+-- Migration 004: Add template_group to sequences
+-- Date: 2026-04-08
+-- Groups: morning | activity | afternoon | evening
+
+ALTER TABLE public.sequences
+  ADD COLUMN IF NOT EXISTS template_group TEXT
+    CHECK (template_group IN ('morning', 'activity', 'afternoon', 'evening'));
+
+-- Index for fast group filtering on the library page
+CREATE INDEX IF NOT EXISTS idx_sequences_template_group
+  ON public.sequences (template_group)
+  WHERE is_template = TRUE;
+-- Migration 005: Add transition_notice to child_profiles
+-- Date: 2026-04-09
+-- When enabled, a brief "what's next" screen appears between steps
+-- so the child can prepare before the next step begins.
+
+ALTER TABLE public.child_profiles
+  ADD COLUMN IF NOT EXISTS transition_notice BOOLEAN NOT NULL DEFAULT TRUE;
+-- Migration 006: Allow invitees to accept their own pending invite
+-- Date: 2026-04-10
+-- The existing SELECT policy lets invitees view their invite.
+-- This adds an UPDATE policy so the accept endpoint can set member_id + accepted_at.
+
+CREATE POLICY "Invitees can accept their own invite"
+  ON public.team_members FOR UPDATE
+  USING (
+    member_email = (SELECT email FROM auth.users WHERE id = auth.uid())
+    AND accepted_at IS NULL
+  )
+  WITH CHECK (
+    member_email = (SELECT email FROM auth.users WHERE id = auth.uid())
+  );
+-- Migration 007: Store consent_given_at on signup
+-- Date: 2026-04-10
+-- The signup form requires the GDPR-K consent checkbox before submission.
+-- This updates the trigger so consent_given_at is recorded at account creation.
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (id, full_name, consent_given_at)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'full_name',
+    NOW()
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
